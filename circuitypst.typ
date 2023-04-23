@@ -1,8 +1,9 @@
 #import "components.typ"
+#import "utils.typ"
 
 #import "../typst-canvas/draw.typ": *
 
-#let node(component, position, name: none, anchor: none) ={
+#let node(component, position, name: none, anchor: none) = {
   group(name: name, anchor: anchor, {
     assert(component in components.node, message: "Component '" + component + "' is unknown")
     import "../typst-canvas/draw.typ": anchor
@@ -41,7 +42,7 @@
     line(
       (
         (v1, v2) => {
-          let d = vector.dist(v1, v2)
+          let d = utils.dist(v1, v2)
           vector.lerp(v1, v2, (d - 1.4) / (2 * d))
         },
         "outer.start",
