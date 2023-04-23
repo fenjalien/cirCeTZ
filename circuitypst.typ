@@ -1,70 +1,130 @@
+#import "components.typ"
 
 #import "../typst-canvas/draw.typ": *
 
-#let subcomponents = (
-  "and gate body": {
-    arc((0, 0.5), 0deg, 180deg, radius: 0.5, name: "curve")
-    line((), (rel: (-0.5, 0)))
-    line((), (rel: (0, -1)))
-    line((), (rel: (0.5, 0)))
-  }
-)
+#let node(component, position, name: none, anchor: none) ={
+  group(name: name, anchor: anchor, {
+    assert(component in components.node, message: "Component '" + component + "' is unknown")
+    import "../typst-canvas/draw.typ": anchor
+    // translate(position)
+    anchor("center", position)
+    components.node.at(component)
+  })
+  move-to(position)
+}
 
-#let components = (
-  "and gate": {
-    subcomponents.at("and gate body")
-    line((-0.5, -0.25), (rel: (-0.5, 0)), name: "1")
-    line((-0.5, 0.25), (rel: (-0.5, 0)), name: "2")
-    line((0.5, 0), (rel: (0.5, 0)), name: "3")
-    anchor("in 1", "1.end")
-    anchor("bin 1", "1.start")
-    anchor("in 2", "2.end")
-    anchor("bin 2", "2.start")
-    anchor("out", "3.end")
-    anchor("bout", "3.start")
-  },
-  "or gate": {
-    arc((0.5, 0), 120deg, 180deg, name: "tcurve")
-    arc((0.5, 0), 0deg, 60deg, anchor: "end", name: "bcurve")
-    line("tcurve.end", (-0.5, -0.5))
-    line("bcurve.start", (-0.5, 0.5))
-    arc((-0.5, 0.5), 60deg, 120deg)
+#let to(
+  component, 
+  from, 
+  to, 
+  label: none, 
+  name: none, 
+  i: none,
+  v: none,
+  poles: none,
+  ) = {
+  group(name: name, {
+    assert(component in components.path, message: "Component '" + component + "' is unknown")
 
-    // x coordinate of where the input legs touch the body of the gate
-    let x = calc.cos(calc.asin(0.25)) - calc.cos(calc.asin(0.5)) - 0.5
-    line((x, -0.25), (-1, -0.25), name: "1")
-    line((x, 0.25), (-1, 0.25), name: "2")
-    line((0.5, 0), (1, 0), name: "3")
+    stroke(none)
+    line(from, to, name: "outer")
 
-    anchor("in 1", "1.end")
-    anchor("bin 1", "1.start")
-    anchor("in 2", "2.end")
-    anchor("bin 2", "2.start")
-    anchor("out", "3.end")
-    anchor("bout", "3.start")
-  },
-  "nand gate": {
-    subcomponents.at("and gate body")
-    circle("curve.right", radius: 0.1, anchor: "left", name: "circle")
-    
-    line((-0.5, -0.25), (rel: (-0.5, 0)), name: "1")
-    line((-0.5, 0.25), (rel: (-0.5, 0)), name: "2")
-    line("circle.right", (1, 0), name: "3")
-    
-    anchor("in 1", "1.end")
-    anchor("bin 1", "1.start")
-    anchor("in 2", "2.end")
-    anchor("bin 2", "2.start")
-    anchor("out", "3.end")
-    anchor("bout", "3.start")
-  }
+    translate("outer.start")
+    rotate(
+      (
+        (v1, v2) => if v2.at(1) < 0 {1} else {-1} * vector.angle(vector.sub(v2, v1), (0,0,0), (1,0,0)),
+        "outer.start",
+        "outer.end"
+      )
+    )
 
+    line(
+      (
+        (v1, v2) => {
+          let d = vector.dist(v1, v2)
+          vector.lerp(v1, v2, (d - 1.4) / (2 * d))
+        },
+        "outer.start",
+        "outer.end",
+      ),
+      (rel: (1.4, 0)),
+      name: "inner"
+    )
 
-)
+    stroke(black)
+    line("outer.start", "inner.start")
+    line("inner.end", "outer.end")
+    components.path.at(component)
 
-#let node(component, position, name: none, anchor: none) = group(name: name, anchor: anchor, {
-  assert(component in components, message: "Component '" + component + "' is unknown")
-  import "../typst-canvas/draw.typ": anchor
-  translate(position)
-  components.at(component)
-})
+    if label != none {
+      content("label", label)
+    }
+
+    if v != none {
+      assert(type(v) == "content" or (type(v) == "array" and i.len() == 2 and type(v.first()) == "string" and type(v.last()) == "content"), message: "Invalid voltage syntax")
+
+      let y = -0.3
+      let plus = ((v1, v2) => vector.add(vector.lerp(v1, v2, 0.25), (0, y, 0)), "inner.end", "outer.end")
+      let minus = ((v1, v2) => vector.add(vector.lerp(v1, v2, 0.75), (0, y, 0)), "outer.start", "inner.start")
+
+      content(plus, $+$)
+      content(minus, $-$)
+      content("annotation", v)
+      
+    }
+
+    if i != none {
+      assert(type(i) == "content" or (type(i) == "array" and i.len() == 2 and type(i.first()) == "string" and type(i.last()) == "content"), message: "Invalid current label syntax")
+
+      let from = "inner.end"
+      let to = "outer.end"
+      let c = i
+      let y = 0.3
+      let d = 0deg
+
+      if type(i) == "array" {
+        let p = i.first()
+        c = i.last()
+
+        let ab = p.find(regex("\^|_"))
+        assert(ab != none, message: "'^' or '_' not found in `i`")
+        if  ab == "_"{
+          y *= -1
+        }
+
+        let lr = p.find(regex("<|>"))
+        assert(lr != none, message: "'<' or '>' not found in `i`")
+        if p.position(lr) == 0 {
+          to= "outer.start"
+          from = "inner.start"
+        }
+        if lr == "<" {
+          d = 180deg
+          y *= -1
+        }
+      } else if component == "short" {
+        from = "inner.start"
+        to = "inner.end"
+      }
+
+      rotate(d)
+      node("currarrow", ((v1, v2) => vector.lerp(v1, v2, 0.5), from, to))
+      content((rel: (0, y)), c)
+      rotate(-d)
+    }
+
+    if poles != none {
+      if type(poles) == "string" {
+        poles = (poles.first(), poles.last()).map(p => if p == "*" {"circ"} else if p == "d" {"diamondpole"} else if p == "s" {"squarepole"} else {none})
+      }
+      assert(type(poles) == "array" and poles.len() == 2)
+      if poles.first() != none {
+        node(poles.first(), "outer.start")
+      }
+      if poles.last() != none {
+        node(poles.last(), "outer.end")
+      }
+    }
+  })
+  move-to(to)
+}
