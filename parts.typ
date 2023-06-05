@@ -1,40 +1,76 @@
 #import "../typst-canvas/draw.typ": *
-
+#import "utils.typ": anchors
 #let and-gate-body = {
-  arc("center", 0deg, 180deg, radius: 0.5, name: "curve", anchor: "origin")
-  line(
-    "curve.start",
-    (rel: (-0.5, 0)), 
-    (rel: (0, -1)),
-    (rel: (0.5, 0))
-  )
-  anchor("bin 1", (rel: (-0.5, 0.75)))
-  anchor("in 1", (rel: (-0.5, 0)))
-  anchor("in 2", (rel: (0, -0.5)))
-  anchor("bin 2", (rel: (0.5, 0)))
-  anchor("bout", (rel: (1, 0.25)))
-  anchor("out", (rel: (0.5, 0)))
+  merge-path(close: true, {
+    arc((0,0), -90deg, 90deg, radius: 0.5, name: "curve", anchor: "origin")
+    line(
+      (0, 0.5),
+      (-0.5, 0.5),
+      (-0.5, -0.5)
+    )
+  })
+  anchors((
+    "bin 1": (-0.5, 0.25),
+    "in 1": (rel: (-0.5, 0)),
+    "bin 2": (-0.5, -0.25),
+    "in 2": (rel: (-0.5, 0)),
+    "bout": (0.5, 0),
+    "out": (rel: (0.5, 0)),
+    "north": (0, 0.5),
+    "south": (rel: (0, -1)),
+    "east": "out",
+    "west": ("in 1", "|-", "center"),
+    "left": ("bin 1", "|-", "center"),
+    "right": "bout"
+  ))
 }
 
 #let or-gate-body = {
-  arc((rel: (0.5, 0)), 0deg, 60deg, anchor: "end", name: "tcurve")
-  arc((), 120deg, 180deg, name: "bcurve")
-  move-to("center")
-  line((rel: (-0.5, 0.5)), "tcurve.start")
-  move-to("center")
-  line((rel: (-0.5, -0.5)), "bcurve.end")
-  move-to("center")
-  arc((rel: (-0.5, 0.5)), 60deg, 120deg)
+  merge-path(close: true, {
+    arc((0.5, 0), -90deg, -30deg, anchor: "end", name: "bcurve")
+    arc((0.5,0), 30deg, 90deg, anchor: "start", name: "tcurve")
+    line("tcurve.end", (-0.5, 0.5))
+    arc((), -30deg, 30deg, anchor: "end")
+  })
 
-  
   // x coordinate of where the input legs touch the body of the gate
-  let x = calc.cos(calc.asin(0.25)) - calc.cos(calc.asin(0.5))
-  anchor("bin 1", (rel: (x, -0.25)))
-  anchor("bin 2", (rel: (0, -0.5)))
-  anchor("in 2", (rel: (-0.5-x, 0)))
-  anchor("in 1", (rel: (0, 0.5)))
-  anchor("bout", (rel: (1.5, -0.25)))
-  anchor("out", (rel: (0.5, 0)))
+  let x = calc.cos(calc.asin(0.25)) - calc.cos(calc.asin(0.5)) - 0.5
+  anchors((
+    "bin 1": (x, 0.25),
+    "in 1": (-1, 0.25),
+    "bin 2": (x, -0.25),
+    "in 2": (-1, -0.25),
+    "bout": (0.5, 0),
+    "out": (rel: (0.5, 0)),
+    "north": (0, 0.5),
+    "south": (rel: (0, -1)),
+    "east": "out",
+    "west": ("in 1", "|-", "center"),
+    "left": ("bin 1", "|-", "center"),
+    "right": "bout"
+  ))
+}
+
+#let not-circle = {
+  circle((rel: (0.1, 0), to: "bout"), radius: 0.1)
+  anchors((
+    "N-not": (),
+    "body right": "bout",
+    "bout": (rel: (0.2, 0)),
+    "right": "bout"
+  ))
+}
+
+#let xor-bar = {
+  arc((-0.6, -0.5), -30deg, 30deg)
+  anchors((
+    "ibin 1": "bin 1",
+    "ibin 2": "bin 2",
+    "bin 1": (rel: (-0.1, 0), to: "bin 1"),
+    "bin 2": (rel: (-0.1, 0), to: "bin 2"),
+    "body left": "left",
+    "left": (rel: (-0.1, 0), to: "left")
+  ))
 }
 
 #let logic-gate-legs = for a in ("in 1", "in 2", "out") {
