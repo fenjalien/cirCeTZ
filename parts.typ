@@ -32,7 +32,7 @@
     arc((0.5, 0), start: -90deg, stop: -30deg, anchor: "end", name: "bcurve")
     arc((0.5,0), start: 30deg, stop: 90deg, anchor: "start", name: "tcurve")
     line("tcurve.end", (-0.5, 0.5))
-    arc((), start: -30deg, stop: 30deg, anchor: "end")
+    arc((), start: 30deg, stop: -30deg, anchor: "start")
   })
 
   // x coordinate of where the input legs touch the body of the gate
