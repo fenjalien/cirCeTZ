@@ -1,8 +1,10 @@
-#import "../typst-canvas/draw.typ": *
+#import "@preview/cetz:0.0.1"
+#import cetz.draw: merge-path, arc, line, circle
+
 #import "utils.typ": anchors
 #let and-gate-body = {
   merge-path(close: true, {
-    arc((0,0), -90deg, 90deg, radius: 0.5, name: "curve", anchor: "origin")
+    arc((0,0), start: -90deg, stop: 90deg, radius: 0.5, name: "curve", anchor: "origin")
     line(
       (0, 0.5),
       (-0.5, 0.5),
@@ -27,10 +29,10 @@
 
 #let or-gate-body = {
   merge-path(close: true, {
-    arc((0.5, 0), -90deg, -30deg, anchor: "end", name: "bcurve")
-    arc((0.5,0), 30deg, 90deg, anchor: "start", name: "tcurve")
+    arc((0.5, 0), start: -90deg, stop: -30deg, anchor: "end", name: "bcurve")
+    arc((0.5,0), start: 30deg, stop: 90deg, anchor: "start", name: "tcurve")
     line("tcurve.end", (-0.5, 0.5))
-    arc((), -30deg, 30deg, anchor: "end")
+    arc((), start: -30deg, stop: 30deg, anchor: "end")
   })
 
   // x coordinate of where the input legs touch the body of the gate
@@ -62,7 +64,7 @@
 }
 
 #let xor-bar = {
-  arc((-0.6, -0.5), -30deg, 30deg)
+  arc((-0.6, -0.5), start: -30deg, stop: 30deg)
   anchors((
     "ibin 1": "bin 1",
     "ibin 2": "bin 2",
