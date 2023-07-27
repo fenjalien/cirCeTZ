@@ -27,6 +27,17 @@ Here is a template:
 ```
 Also see `examples/` for some examples. 
 
+## Testing
+
+This package comes with some unit tests under the `tests` directory.
+To run all tests you can run the `just test` target.
+
+You need to have ImageMagick installed on your system, which is needed for image comparison.
+
+### Windows
+If you are using the [Chocolatey](https://chocolatey.org/) package manager, you can install imagemagick using `choco install imagemagick`.
+Otherwise download and install a matching package from the [ImageMagick](https://imagemagick.org/script/download.php) website.
+
 ## Requirements for First Stable Release
 - [ ] Reference manual (doesn't have to inclued tutorials, just a list of currently supported components)
 - [ ] Tests
