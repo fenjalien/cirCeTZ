@@ -1,9 +1,11 @@
 #import "components.typ"
 #import "utils.typ"
 
-#import "../typst-canvas/draw.typ": *
-#import "../typst-canvas/coordinate.typ"
-#import "../typst-canvas/vector.typ"
+#import "@preview/cetz:0.1.0"
+
+#import cetz.draw: *
+#import cetz.coordinate
+#import cetz.vector
 
 #let canvas-fill = fill
 #let canvas-stroke = stroke
@@ -17,7 +19,7 @@
 #let node(component, position, label: none, name: none, anchor: none, fill: auto, stroke: auto, ..options) = {
   assert(component in components.node, message: "Component '" + component + "' is unknown")
   group(name: name, anchor: anchor, {
-    import "../typst-canvas/draw.typ": anchor
+    import cetz.draw: anchor
 
     if fill != auto {
       canvas-fill(fill)

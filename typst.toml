@@ -1,0 +1,5 @@
+[package]
+name = "cirCeTZ"
+version = "0.0.1"
+entrypoint = "src/lib.typ"
+license = "Apache"
