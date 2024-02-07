@@ -1,5 +1,5 @@
 # circuitypst
-
+# THERES WORK ON THE DEV BRANCH THIS PROJECT ISN'T DEAD
 A port of [`circuitikz`](https://github.com/circuitikz/circuitikz) to Typst using [`typst-canvas`](https://github.com/johannes-wolf/typst-canvas). Due to the size of `circuitikz` features will be ported as I need them for my own work, if theres a feature you need feel free to make an issue, PR or contact me through Typst's discord (same username)!
 
 ![](assets/current%20shunt.png)
