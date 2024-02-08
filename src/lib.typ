@@ -1,7 +1,9 @@
 #import "/src/dependencies.typ": cetz
-#import "/src/utils.typ"
-#import "/src/component.typ": component
+// #import "/src/utils.typ"
+// #import "/src/component.typ": component
+#import "/src/components.typ"
 
+/*
 #let and-gate-style = (fill: auto, stroke: auto)
 
 #let and-gate(..inputs) = {

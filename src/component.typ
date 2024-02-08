@@ -1,11 +1,30 @@
 #import "/src/dependencies.typ": cetz
 
+
+#let labels(
+  label,
+  annotation,
+  current,
+  voltage,
+  flow
+) = {
+  import cetz.draw: *
+  if label != none {
+    content((rel: (0, 0.8em), to: "component.north"), label)
+  }
+}
+
 #let component(
+  component-name,
   func,
   default-style,
-  component-name,
   name: none,
   anchor: none,
+  l: none,
+  i: none,
+  v: none,
+  f: none,
+  a: none,
   ..position-style,
   ) = {
   let user-anchor = anchor
@@ -15,21 +34,41 @@
 
   assert(pos.len() in (1, 2), message: "aaaa")
 
-  group(
-    name: name,
-    anchor: user-anchor,
-    ctx => {
-      set-origin(position)
-      
-      func(
-        cetz.styles.resolve(
+  group(name: name, ctx => {
+    if pos.len() == 1 {
+      set-origin(pos.first())
+    } else {
+      let (ctx, ..pos) = cetz.coordinate.resolve(ctx, ..pos)
+      anchor("start", pos.first())
+      anchor("end", pos.last())
+      set-origin((pos.first(), 50%, pos.last()))
+      rotate(cetz.vector.angle2(..pos))
+    }
+
+    group(
+      name: "component",
+      anchor: user-anchor,
+      {
+        let style = cetz.styles.resolve(
           ctx.style,
           root: component-name,
-          merge: style.named(),
+          merge: position-style.named(),
           base: default-style
         )
-      )
-    },
-  )
-  move-to(position)
+        func(style)
+        hide(rect("a", "b", name: "rect"))
+        copy-anchors("rect")
+      }
+    )
+
+    if pos.len() == 2 {
+      line("component.west", "start")
+      line("component.east", "end")
+      labels(l, a, i, v, f)
+    }
+    if name != none {
+      copy-anchors("component")
+    }
+  })
+  move-to(pos.last())
 }
