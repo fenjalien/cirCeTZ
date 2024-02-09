@@ -1,6 +1,4 @@
 #import "/src/dependencies.typ": cetz
-// #import "/src/utils.typ"
-// #import "/src/component.typ": component
 #import "/src/components.typ"
 
 /*

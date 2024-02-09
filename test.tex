@@ -3,6 +3,7 @@
 
 \begin{document}
 \begin{circuitikz}
-\draw (0,0) to[R, l=$R_1$, a^=$i_1$] (2,0);
+\draw (0,0) to[R, a=$i_1$, name=L1] (2,0);
+\node[circle] at (L1label.center) {here};
 \end{circuitikz}
 \end{document}

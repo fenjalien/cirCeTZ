@@ -12,7 +12,25 @@
   if label != none {
     content((rel: (0, 0.8em), to: "component.north"), label)
   }
+  if annotation != none {
+    content((rel: (0, -0.8em), to: "component.south"), annotation)
+  }
+  if current != none {
+    import "/src/components.typ": currarrow
+    currarrow(("component.east", 50%, "end"))
+  }
 }
+
+#let component-default-style = (
+  style: (
+    current: "european",
+    voltage: "european",
+    port: "american",
+    resistor: "american",
+    inductor: "cute"
+  ),
+)
+
 
 #let component(
   component-name,
@@ -49,15 +67,23 @@
       name: "component",
       anchor: user-anchor,
       {
-        let style = cetz.styles.resolve(
-          ctx.style,
-          root: component-name,
-          merge: position-style.named(),
-          base: default-style
+        // panic(cetz.styles.resolve(ctx.style, base: component-default-style, root: ""))
+        func(
+          cetz.styles.resolve(
+            cetz.styles.resolve(
+              ctx.style,
+              root: "circetz",
+              base: component-default-style
+            ),
+            root: component-name,
+            merge: position-style.named(),
+            base: default-style
+          )
         )
-        func(style)
-        hide(rect("a", "b", name: "rect"))
-        copy-anchors("rect")
+        if pos.len() == 2 {
+          hide(rect("a", "b", name: "rect"))
+          copy-anchors("rect")
+        }
       }
     )
 
