@@ -1,9 +1,8 @@
-\documentclass{standalone}
+\documentclass{article}
 \usepackage{circuitikz}
 
 \begin{document}
 \begin{circuitikz}
-\draw (0,0) to[R, a=$i_1$, name=L1] (2,0);
-\node[circle] at (L1label.center) {here};
+    \draw (0,0) to[R, v=$v_1$] (2,0);
 \end{circuitikz}
 \end{document}

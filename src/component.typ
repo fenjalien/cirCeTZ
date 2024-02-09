@@ -1,23 +1,16 @@
 #import "/src/dependencies.typ": cetz
+#import "/src/labels.typ": draw-labels
 
-
-#let labels(
-  label,
-  annotation,
-  current,
-  voltage,
-  flow
-) = {
-  import cetz.draw: *
-  if label != none {
-    content((rel: (0, 0.8em), to: "component.north"), label)
+#let draw-poles(poles) = {
+  if type(poles) != str {
+    return
   }
-  if annotation != none {
-    content((rel: (0, -0.8em), to: "component.south"), annotation)
-  }
-  if current != none {
-    import "/src/components.typ": currarrow
-    currarrow(("component.east", 50%, "end"))
+  assert(poles.len() in (2, 3))
+  import "/src/components.typ": circ
+  for (pos, pole) in (("start", poles.first()), ("end", poles.last())) {
+    if pole == "*" {
+      circ(pos)
+    }
   }
 }
 
@@ -29,6 +22,10 @@
     resistor: "american",
     inductor: "cute"
   ),
+  stroke: (thickness: 0.4pt, join: "round"),
+  thickness: 2,
+  fill: auto,
+  mark: none,
 )
 
 
@@ -43,6 +40,9 @@
   v: none,
   f: none,
   a: none,
+  poles: none,
+  mirror: false,
+  invert: false,
   ..position-style,
   ) = {
   let user-anchor = anchor
@@ -63,23 +63,45 @@
       rotate(cetz.vector.angle2(..pos))
     }
 
+    let style = cetz.styles.resolve(
+      ctx.style,
+      root: "circetz",
+      base: component-default-style
+    )
+    scale(1.4)
+
     group(
       name: "component",
       anchor: user-anchor,
       {
-        // panic(cetz.styles.resolve(ctx.style, base: component-default-style, root: ""))
-        func(
-          cetz.styles.resolve(
-            cetz.styles.resolve(
-              ctx.style,
-              root: "circetz",
-              base: component-default-style
-            ),
-            root: component-name,
-            merge: position-style.named(),
-            base: default-style
+        if mirror or invert {
+          scale(
+            y: if mirror { -1 } else { 1 },
+            x: if invert { -1 } else { 1 }
           )
+        }
+        let style = cetz.styles.resolve(
+          style,
+          root: component-name,
+          merge: position-style.named(),
+          base: default-style
         )
+
+        set-style(..{
+          (:)
+          if "thickness" in style {
+            (stroke: (thickness: style.stroke.thickness * style.thickness))
+          }
+        })
+
+        func(style)
+        
+        if mirror or invert {
+          scale(
+            y: if mirror { -1 } else { 1 },
+            x: if invert { -1 } else { 1 }
+          )
+        }
         if pos.len() == 2 {
           hide(rect("a", "b", name: "rect"))
           copy-anchors("rect")
@@ -88,13 +110,16 @@
     )
 
     if pos.len() == 2 {
-      line("component.west", "start")
-      line("component.east", "end")
-      labels(l, a, i, v, f)
+      line("component.west", "start", stroke: style.stroke)
+      line("component.east", "end", stroke: style.stroke)
+      draw-labels(component-name, l, a, i, v, f)
+      draw-poles(poles)
     }
     if name != none {
       copy-anchors("component")
     }
   })
-  move-to(pos.last())
+  for p in pos {
+    move-to(p)
+  }
 }

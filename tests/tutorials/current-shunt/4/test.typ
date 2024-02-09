@@ -12,7 +12,7 @@
       style: (current: "american"),
     )
   )
-  isource((0,0), (0,3), l: $I_0$, v: $V_0$)
+  isource((0,0), (0,3), l: $I_0$, mirror: true)
   short((), (2,3), i: $I_0$, poles: "-*")
   resistor(
     (), (2, 0),
