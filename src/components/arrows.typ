@@ -10,7 +10,7 @@
     let scale = 1/style.current-arrow-scale
     line(
       fill: style.fill,
-      stroke: style.stroke,
+      stroke: if style.stroke.paint != none { style.stroke },
       close: true,
       (-0.7 * scale, -0.8 * scale),
       (1 * scale, 0),

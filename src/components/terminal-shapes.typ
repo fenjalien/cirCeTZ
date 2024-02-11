@@ -9,14 +9,34 @@
     circle(
       (0, 0),
       radius: style.nodes-width,
-      stroke: style.stroke,
+      stroke: if style.stroke.paint != none { style.stroke },
       fill: style.fill
     )
   },
   (
     stroke: none,
     fill: black,
-    nodes-width: 0.04
+    scale: auto,
+    nodes-width: auto
+  ),
+  ..inputs
+)
+
+#let ocirc(..inputs) = component(
+  "ocirc",
+  (style) => {
+    circle(
+      (0, 0),
+      radius: style.nodes-width,
+      stroke: style.stroke,
+      fill: style.fill
+    )
+  },
+  (
+    stroke: auto,
+    fill: white,
+    scale: auto,
+    nodes-width: auto
   ),
   ..inputs
 )

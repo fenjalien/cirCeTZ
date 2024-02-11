@@ -6,10 +6,8 @@
 #let short(..inputs) = component(
   "short",
   (style) => {
-    let pos = 0.5
-    line((-pos, 0), (pos, 0))
-    anchor("a", (-pos, 0.001))
-    anchor("b", (pos, -0.001))
+    // anchor("a", (0.05, 0.05))
+    // anchor("b", (-0.05, -0.05))
   },
   (
     stroke: auto
@@ -24,6 +22,7 @@
     let height = style.height
     let sgn = -1
     let x = style.width / 2
+    style.stroke.thickness *= style.thickness
     line(
       (-x, 0),
       (rel: (step/2, height/2)),
@@ -33,7 +32,7 @@
       },
       (x, 0),
       fill: none,
-      // stroke: (join: "round")
+      stroke: style.stroke
     )
     anchor("a", (-x, -height/2))
     anchor("b", (x, height/2))
@@ -41,6 +40,7 @@
   (
     stroke: auto,
     thickness: auto,
+    scale: auto,
     width: 0.8,
     height: 0.3,
     zigs: 3,

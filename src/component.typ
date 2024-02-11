@@ -6,10 +6,12 @@
     return
   }
   assert(poles.len() in (2, 3))
-  import "/src/components.typ": circ
+  import "/src/components/terminal-shapes.typ": circ, ocirc
   for (pos, pole) in (("start", poles.first()), ("end", poles.last())) {
     if pole == "*" {
       circ(pos)
+    } else if pole == "o" {
+      ocirc(pos)
     }
   }
 }
@@ -22,10 +24,14 @@
     resistor: "american",
     inductor: "cute"
   ),
-  stroke: (thickness: 0.4pt, join: "round"),
+  stroke: (thickness: 0.4pt),
   thickness: 2,
   fill: auto,
   mark: none,
+  nodes-width: 0.04,
+  scale: 1,
+  component-text: "center"
+
 )
 
 
@@ -50,7 +56,7 @@
 
   let pos = position-style.pos()
 
-  assert(pos.len() in (1, 2), message: "aaaa")
+  assert(pos.len() in (1, 2), message: "Expected 1 or 2 positional arguments, got " + repr(pos.len()))
 
   group(name: name, ctx => {
     if pos.len() == 1 {
@@ -68,7 +74,8 @@
       root: "circetz",
       base: component-default-style
     )
-    scale(1.4)
+
+    let component-text = style.component-text
 
     group(
       name: "component",
@@ -86,13 +93,14 @@
           merge: position-style.named(),
           base: default-style
         )
-
-        set-style(..{
-          (:)
-          if "thickness" in style {
-            (stroke: (thickness: style.stroke.thickness * style.thickness))
-          }
-        })
+        scale(1.4 * style.at("scale", default: 1))
+        
+        if "stroke" in style {
+          style.stroke = cetz.util.resolve-stroke(style.stroke)
+        }
+        if "component-text" in style {
+          component-text = style.component-text
+        }
 
         func(style)
         
@@ -102,18 +110,27 @@
             x: if invert { -1 } else { 1 }
           )
         }
-        if pos.len() == 2 {
+        if pos.len() == 2 and component-name != "short" {
           hide(rect("a", "b", name: "rect"))
           copy-anchors("rect")
         }
+        ()
       }
     )
 
     if pos.len() == 2 {
-      line("component.west", "start", stroke: style.stroke)
-      line("component.east", "end", stroke: style.stroke)
+      if component-name == "short" {
+        line("start", "end", stroke: style.stroke)
+      } else {
+        line("component.west", "start", stroke: style.stroke)
+        line("component.east", "end", stroke: style.stroke)
+      }
       draw-labels(component-name, l, a, i, v, f)
       draw-poles(poles)
+    } else {
+      if l != none {
+        content("component.text", l, anchor: if component-text == "left"{ "west" } else { "center" }, padding: 0.1)
+      }
     }
     if name != none {
       copy-anchors("component")

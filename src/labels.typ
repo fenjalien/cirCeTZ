@@ -12,7 +12,7 @@
   }
   currarrow(
     if component-name == "short" {
-      ("component.west", 50%, "component.east")
+      ("start", 50%, "end")
     } else if p == 0 {
       ("component.west", 50%, "start")
     } else {
@@ -27,7 +27,21 @@
 }
 
 #let draw-voltage(input) = {
-  
+  content((rel: (0, -0.8em), to: "component.south"), input)
+  content(
+    (
+      rel: (0, -0.4em),
+      to: ("component.west", 50%, "start"), 
+    ),
+    $-$
+  )
+  content(
+    (
+      rel: (0, -0.4em),
+      to: ("component.east", 50%, "end"), 
+    ),
+    $+$
+  )
 }
 
 #let draw-labels(
