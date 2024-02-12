@@ -1,5 +1,6 @@
-#import "../typst-canvas/vector.typ"
-#import "../typst-canvas/draw.typ": anchor
+#import "@preview/cetz:0.0.1"
+#import cetz.draw: anchor, vector
+
 
 #let vector-dist(v1, v2) = {
   return calc.abs(

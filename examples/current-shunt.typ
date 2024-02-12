@@ -1,11 +1,11 @@
-#import "../../typst-canvas/canvas.typ": canvas
+#import "@preview/cetz:0.0.1"
 
 #lorem(30)
 
 #figure(
-  canvas(length: 1cm, debug: false, {
-    import "../../typst-canvas/draw.typ": *
-    import "../circuitypst.typ": node, to
+  cetz.canvas(length: 1cm, debug: false, {
+    import cetz.draw: line
+    import "@local/circuitypst:0.0.1": node, to
 
     to("isourceAM", (0,0), (0,3), label: $I_0$, v: h(0.5em) + $V_0$)
     to("short", (), (2,3), i: $I_0$,)

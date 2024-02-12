@@ -1,11 +1,11 @@
-#import "../../typst-canvas/canvas.typ": canvas
+#import "@preview/cetz:0.0.1"
 
 #lorem(30)
 
 #figure(
-  canvas({
-    import "../../typst-canvas/draw.typ": *
-    import "../circuitypst.typ": node
+  cetz.canvas({
+    import cetz.draw: line, content
+    import "@local/circuitypst:0.0.1": node
   
     node("nand gate", (0,1), name: "g1")
     content("g1.out", [#h(0.5em) Q], anchor: "left")

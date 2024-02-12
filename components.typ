@@ -1,4 +1,6 @@
-#import "../typst-canvas/draw.typ": *
+#import "@preview/cetz:0.0.1"
+
+#import cetz.draw: line, circle, fill, rect
 
 #import "parts.typ"
 #import "utils.typ": anchors
