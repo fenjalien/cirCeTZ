@@ -1,6 +1,13 @@
 #import "/src/dependencies.typ": cetz
 #import "/src/components.typ"
 
+
+#let show-coord(coord) = {
+  import cetz.draw: *
+  circle(coord, radius: 1pt, stroke: (paint: red), name: "pin")
+  content((rel: (45deg, 0.1cm)), text(coord.split(".").last(), size: 5pt, fill: red), anchor: "south-west", name: "label", frame: "rect", stroke: none, padding: 0.02)
+  line("pin", "label", stroke: (paint: red))
+}
 /*
 #let and-gate-style = (fill: auto, stroke: auto)
 

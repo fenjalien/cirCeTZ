@@ -59,6 +59,7 @@
   assert(pos.len() in (1, 2), message: "Expected 1 or 2 positional arguments, got " + repr(pos.len()))
 
   group(name: name, ctx => {
+    let rotation = 0deg
     if pos.len() == 1 {
       set-origin(pos.first())
     } else {
@@ -66,7 +67,8 @@
       anchor("start", pos.first())
       anchor("end", pos.last())
       set-origin((pos.first(), 50%, pos.last()))
-      rotate(cetz.vector.angle2(..pos))
+      rotation = cetz.vector.angle2(..pos)
+      rotate(rotation)
     }
 
     let style = cetz.styles.resolve(
@@ -76,24 +78,41 @@
     )
 
     let component-text = style.component-text
+    let label-size = cetz.util.measure(ctx, l)
 
     group(
       name: "component",
       anchor: user-anchor,
       {
+        anchor("default", (0,0))
         if mirror or invert {
           scale(
             y: if mirror { -1 } else { 1 },
             x: if invert { -1 } else { 1 }
           )
         }
-        let style = cetz.styles.resolve(
-          style,
-          root: component-name,
-          merge: position-style.named(),
-          base: default-style
-        )
+        style = if type(component-name) == str {
+          cetz.styles.resolve(
+            style,
+            root: component-name,
+            merge: position-style.named(),
+            base: default-style
+          )
+        } else {
+          cetz.styles.resolve(
+            cetz.styles.resolve(
+              style,
+              root: component-name.first(),
+              base: default-style.first()
+            ),
+            root: component-name.last(),
+            merge: position-style.named(),
+            base: default-style.join()
+          )
+        }
         scale(1.4 * style.at("scale", default: 1))
+
+        style.label = label-size
         
         if "stroke" in style {
           style.stroke = cetz.util.resolve-stroke(style.stroke)
@@ -125,11 +144,16 @@
         line("component.west", "start", stroke: style.stroke)
         line("component.east", "end", stroke: style.stroke)
       }
-      draw-labels(component-name, l, a, i, v, f)
+      draw-labels(component-name, rotation, cetz.util.measure.with(ctx), l, a, i, v, f)
       draw-poles(poles)
     } else {
       if l != none {
-        content("component.text", l, anchor: if component-text == "left"{ "west" } else { "center" }, padding: 0.1)
+        content(
+          "component.text",
+          l,
+          anchor: if component-text == "left" { "west" } else { "center" },
+          // padding: 0.1
+        )
       }
     }
     if name != none {

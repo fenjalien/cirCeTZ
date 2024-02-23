@@ -17,7 +17,7 @@
     anchor("bin down", (-step, -input-height))
     anchor(
       "text",
-      (if style.component-text == "left" { -step } else { 0 }, 0)
+      (if style.component-text == "left" { -step + style.label.first()/4 } else { 0 }, 0)
     )
 
     // triangle

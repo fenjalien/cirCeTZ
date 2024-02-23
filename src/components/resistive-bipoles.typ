@@ -36,6 +36,7 @@
     )
     anchor("a", (-x, -height/2))
     anchor("b", (x, height/2))
+    // anchor("text", (0, style.label.last()))
   },
   (
     stroke: auto,

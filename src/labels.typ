@@ -46,6 +46,8 @@
 
 #let draw-labels(
   component-name,
+  rotation,
+  measure,
   label,
   annotation,
   current,
@@ -53,10 +55,36 @@
   flow
 ) = {
   if label != none {
-    content((rel: (0, 0.8em), to: "component.north"), label)
+    let (width, height) = measure(label)
+    content(
+      (
+        rel: (0, 0.25em),
+        to: (
+          rel: (
+            0,
+            width/2 * calc.abs(calc.sin(rotation)) + height/2 * calc.abs(calc.cos(rotation))
+          ),
+          to: "component.north"
+        )
+      ),
+      label
+    )
   }
   if annotation != none {
-    content((rel: (0, -0.8em), to: "component.south"), annotation)
+    let (width, height) = measure(annotation)
+    content(
+      (
+        rel: (0, -0.25em),
+        to: (
+          rel: (
+            0,
+            -width/2 * calc.abs(calc.sin(rotation)) - height/2 * calc.abs(calc.cos(rotation))
+          ),
+          to: "component.south"
+        )
+      ),
+      annotation
+    )
   }
   if current != none {
     draw-current(component-name, current)

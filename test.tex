@@ -2,7 +2,14 @@
 \usepackage{circuitikz}
 
 \begin{document}
-\begin{circuitikz}
-    \draw (0,0) to[R, v=$v_1$] (2,0);
+\def\normalcoord(#1){coordinate(#1)}
+\def\showcoord(#1){coordinate(#1) node[circle, red, draw, inner sep=1pt,
+pin={[red, overlay, inner sep=0.5pt, font=\tiny, pin distance=0.1cm,
+pin edge={red, overlay}]45:#1}](){}}
+\let\coord=\normalcoord
+\let\coord=\showcoord
+\begin{circuitikz}[american]
+    \draw (0,0) node[npn](Q) {Q1};
+    \path (Q.text) \coord(text);
 \end{circuitikz}
 \end{document}

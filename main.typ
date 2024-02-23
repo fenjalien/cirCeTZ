@@ -3,29 +3,33 @@
 #import "/src/lib.typ": cetz, components
 #import cetz: *
 
+#set text(0.8em)
+
 #canvas({
   import components: *
   import draw: *
   set-style(
     stroke: (thickness: 0.4pt),
     circetz: (
-      style: (current: "american"),
+      scale: 0.8,
+      component-text: "left"
     )
   )
-  isource((0,0), (0,3), l: $I_0$, v: $V_0$)
-  short((), (2,3), i: $I_0$, poles: "-*")
-  resistor(
-    (), (2, 0),
-    l: $R_1$,
-    i: (">_", $i_1$),
-    poles: "-*",
-  )
-  line((), (0,0))
-  line((2, 3), (4, 3))
-  resistor(
-    (),(4, 0),
-    l: $R_2$,
-    i: (">_", $i_2$)
-  )
-  line((), (2, 0))
+
+  content((0,0), $ v_i $, anchor: "south", padding: 0.1)
+  short((), (1, 0), poles: "o-", name: "s")
+
+  op-amp((), name: "OA", l: `OA1`, anchor: "+", fill: color.rgb("00FFFF").lighten(20%))
+
+  line("OA.-", (rel: (0, -1)), name: "FB")
+
+  resistor((), (rel: (0,-2)), l: $R_1$)
+
+  ground(())
+
+  resistor("FB.end", ((), "-|", "OA.out"), poles: "*-", l: $R_2$)
+  line((), "OA.out")
+
+  short("OA.out", (rel: (1,0)), poles: "*-o")
+  content((), $ v_o $, anchor: "south", padding: 0.1)
 })

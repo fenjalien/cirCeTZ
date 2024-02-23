@@ -39,3 +39,60 @@
   ),
   ..inputs
 )
+
+#let power-supplies(
+  name,
+  style,
+  inputs
+  ) = component(
+  ("power-supplies", name),
+  style => {
+    set-style(stroke: style.stroke)
+    anchor("left", (0,0))
+    anchor("right", (0,0))
+    if name == "vee" {
+      // panic()
+      scale(y: -1)
+    }
+    let width = style.width
+    anchor("text", (
+      0,
+      2 * width + style.label.last() * 0.5
+    ))
+    line(
+      (-0.5 * width, 0.8 * width),
+      (0, 1.5 * width),
+      (0.5 * width, 0.8 * width),
+      stroke: (thickness: style.stroke.thickness * style.thickness)
+    )
+    line((0,0), (0, 1.5 * width))
+  },
+  (
+    (
+      scale: auto,
+      fill: none,
+      thickness: auto,
+      stroke: auto,
+      width: 0.2
+    ),
+    style
+  ),
+  ..inputs
+)
+
+
+#let vcc(..inputs) = power-supplies(
+  "vcc",
+  (
+    width: auto
+  ),
+  inputs
+)
+
+#let vee(..inputs) = power-supplies(
+  "vee",
+  (
+    width: auto
+  ),
+  inputs
+)
