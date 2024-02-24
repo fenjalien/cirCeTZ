@@ -38,6 +38,17 @@
     anchor("G", "B")
 
     func(style)
+
+    if name != "nmos" or style.mos-arrows {
+      // panic(style.arrow-pos)
+      let is-end-pos = style.arrow-pos == "end"
+      currarrow(
+        (name: "arrow-line", anchor: style.arrow-pos),
+        anchor: if is-end-pos { "tip" },
+        rotate: "arrow-line." + if is-end-pos { "start" } else { "end" },
+        invert: is-end-pos
+      )
+    }
   },
   (
     (
@@ -50,7 +61,8 @@
       height: auto,
       width: auto,
       curr-direction: auto,
-      component-text: "left"
+      component-text: "left",
+      arrow-pos: auto
     ),
     style
   ),
@@ -80,10 +92,10 @@
       (base-x, -base-y)
     )
 
-    currarrow(
+    line(
       (base-x, -base-y-2),
       "inner down",
-      scale: 1/1.4
+      name: "arrow-line"
     )
 
     line(
@@ -124,11 +136,6 @@
     line((), "pathstart")
     line((gate-x, 0), (width, 0))
 
-    
-    if style.mos-arrows {
-      currarrow((name: "arrow-line", anchor: style.arrow-pos), anchor: if style.arrow-pos == "end" { "tip" })
-    }
-
 
     set-style(stroke: (thickness: style.stroke.thickness * style.thickness))
     line((base-x, base-y), (base-x, -base-y))
@@ -145,7 +152,6 @@
     width: 0.7,
     curr-direction: 1,
     mos-arrows: false,
-    // component-text: "left"
   ),
   inputs
 )

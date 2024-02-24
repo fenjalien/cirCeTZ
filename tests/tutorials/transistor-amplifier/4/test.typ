@@ -30,4 +30,5 @@
 
   capacitor("in", (rel: (-1.5, 0)), a: $C_2$, poles: "*-o")
   content((), $v_i = v_(i 1)$, anchor: "east")
+
 })

@@ -49,27 +49,38 @@
   poles: none,
   mirror: false,
   invert: false,
+  rotate: 0deg,
   ..position-style,
   ) = {
   let user-anchor = anchor
+  let rotation = rotate
   import cetz.draw: *
 
   let pos = position-style.pos()
-
   assert(pos.len() in (1, 2), message: "Expected 1 or 2 positional arguments, got " + repr(pos.len()))
+  let _ = pos.map(cetz.coordinate.resolve-system)
+
+  assert(rotation == 0deg or pos.len() == 1, message: "Rotation is only supported for node placement.")
+  let _ = if type(rotation) != angle {
+    cetz.coordinate.resolve-system(rotation)
+  }
 
   group(name: name, ctx => {
-    let rotation = 0deg
+    let rotation = rotation
     if pos.len() == 1 {
       set-origin(pos.first())
+      if type(rotation) != angle {
+        let (_, pos, c) = cetz.coordinate.resolve(ctx, pos.first(), rotation)
+        rotation = cetz.vector.angle2(pos, c)
+      }
     } else {
       let (ctx, ..pos) = cetz.coordinate.resolve(ctx, ..pos)
       anchor("start", pos.first())
       anchor("end", pos.last())
       set-origin((pos.first(), 50%, pos.last()))
       rotation = cetz.vector.angle2(..pos)
-      rotate(rotation)
     }
+    rotate(rotation)
 
     let style = cetz.styles.resolve(
       ctx.style,
@@ -99,6 +110,7 @@
             base: default-style
           )
         } else {
+          // panic(cetz.styles.resolve(style, root: "transisto"))
           cetz.styles.resolve(
             cetz.styles.resolve(
               style,
@@ -106,7 +118,7 @@
               base: default-style.first()
             ),
             root: component-name.last(),
-            merge: position-style.named(),
+            merge: cetz.util.merge-dictionary(style.at(component-name.first(), default: (:)), position-style.named()),
             base: default-style.join()
           )
         }
@@ -152,7 +164,7 @@
           "component.text",
           l,
           anchor: if component-text == "left" { "west" } else { "center" },
-          // padding: 0.1
+          padding: 0
         )
       }
     }
