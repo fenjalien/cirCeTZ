@@ -35,6 +35,7 @@
     
     anchor("S", "E")
     anchor("D", "C")
+    anchor("G", "B")
 
     func(style)
   },
