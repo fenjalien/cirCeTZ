@@ -10,7 +10,7 @@
   style,
   inputs
 ) = component(
-  ("transistor", name),
+  ("transistors", name),
   style => {
     let height = style.height/2
     set-style(stroke: style.stroke)

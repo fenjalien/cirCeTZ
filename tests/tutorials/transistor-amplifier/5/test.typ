@@ -1,5 +1,5 @@
 #set page(width: auto, height: auto, margin: 1cm)
-#import "/src/lib.typ": cetz, components, show-coord
+#import "/src/lib.typ": cetz, components, show-anchor
 #import cetz: *
 #import "@preview/metro:0.2.0": qty
 
@@ -10,7 +10,7 @@
     stroke: (thickness: 0.4pt),
     circetz: (
       scale: 1,
-      transistor: (arrow-pos: "end"),
+      transistors: (arrow-pos: "end"),
     ),
     content: (
       padding: 0.1,

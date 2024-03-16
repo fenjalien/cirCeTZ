@@ -1,5 +1,5 @@
 #set page(width: auto, height: auto, margin: 1cm)
-#import "/src/lib.typ": cetz, components, show-coord
+#import "/src/lib.typ": cetz, components, show-anchor
 #import cetz: *
 #import "@preview/metro:0.2.0": qty
 
@@ -22,7 +22,7 @@
   short("Q1.S", (rel: (2, 0)))
   capacitor((), (rel: (0, -1.5)), l: $C_1$)
   ground((), name: "GND")
-  show-coord("GND")
-  show-coord("VEE")
-  show-coord("VCC")
+  show-anchor("GND")
+  show-anchor("VEE")
+  show-anchor("VCC")
 })

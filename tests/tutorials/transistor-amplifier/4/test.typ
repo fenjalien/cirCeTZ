@@ -1,5 +1,5 @@
 #set page(width: auto, height: auto, margin: 1cm)
-#import "/src/lib.typ": cetz, components, show-coord
+#import "/src/lib.typ": cetz, components, show-anchor
 #import cetz: *
 #import "@preview/metro:0.2.0": qty
 

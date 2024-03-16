@@ -30,7 +30,11 @@
   mark: none,
   nodes-width: 0.04,
   scale: 1,
-  component-text: "center"
+  component-text: "center",
+  external-pins: (
+    width: 0.2,
+    thickness: 1
+  )
 
 )
 
